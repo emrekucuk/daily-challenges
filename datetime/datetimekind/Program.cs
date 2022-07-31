@@ -9,4 +9,4 @@ DateTime value = DateTime.SpecifyKind(date, DateTimeKind.Local);
 
 Console.WriteLine($"Kind After Using Method: {value.Kind}");
 
-Console.WriteLine($"DateTime is {0} {value}");
+Console.WriteLine($"DateTime is {value}");

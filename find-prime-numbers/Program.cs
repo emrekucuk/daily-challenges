@@ -1,4 +1,4 @@
-﻿void PrimeNumber(int firstNumber, int secondNumber)
+﻿void FindPrimeNumbers(int firstNumber, int secondNumber)
 {
     for (int number = firstNumber; number < secondNumber; number++)
     {
@@ -30,4 +30,4 @@ if (lowerLimit > upperLimit)
     secondNumber = lowerLimit;
 }
 
-PrimeNumber(firstNumber, secondNumber);
+FindPrimeNumbers(firstNumber, secondNumber);

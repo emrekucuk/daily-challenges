@@ -2,7 +2,6 @@
 using System.Net;
 using System.IO;
 
-
 static string GetSourceCode(string url)
 {
     HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
@@ -17,4 +16,11 @@ static string GetSourceCode(string url)
 string url = "https://bigpara.hurriyet.com.tr/doviz/";
 
 string document = GetSourceCode(url);
-System.Console.WriteLine(document);
+
+var dolarIndex = document.IndexOf($"{"USDTRY"}");
+var dolarBuyingAndSelling = document.Substring(dolarIndex + 8, 30);
+System.Console.WriteLine($"Dolar: {dolarBuyingAndSelling}");
+
+var euroIndex = document.IndexOf($"{"EURTRY"}");
+var euroBuyingAndSelling = document.Substring(euroIndex + 8, 30);
+System.Console.WriteLine($"Euro: {euroBuyingAndSelling}");

@@ -15,14 +15,20 @@ void ReadTomlFileDeseriliaze()
         while (streamReader.Peek() >= 0)
         {
             string line = streamReader.ReadLine();
+            if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line))
+                continue;
+
             if (line.StartsWith('[') && line.EndsWith(']'))
             {
                 var childObject = line.Replace('[', ' ').Replace(']', ' ').Trim();
                 if (childObject == "database")
                     referenceObject = tomlFile.Database;
                 else if (childObject == "ftp")
-                {
                     referenceObject = tomlFile.Ftp;
+                else
+                {
+                    System.Console.WriteLine($"Eslesen bir Child Object yok.");
+                    Environment.Exit(0);
                 }
             }
             else if (line.Contains('='))
@@ -35,19 +41,21 @@ void ReadTomlFileDeseriliaze()
 
 void MapStringToObjectProperty(object tomlFileModel, string line)
 {
-
     var keyValueParts = line.Split('=');
     var key = keyValueParts[0];
     var value = keyValueParts[1];
-    System.Console.WriteLine(key.ToLower().Trim());
-    System.Console.WriteLine(value);
+    value = value.Replace("\"", "").Trim();
+    var isMatched = false;
     tomlFileModel.GetType().GetProperties().ToList().ForEach(t =>
     {
-        System.Console.WriteLine(t.Name.ToLower().Trim());
         if (t.Name.ToLower().Trim() == key.ToLower().Trim())
+        {
             t.SetValue(tomlFileModel, value);
+            isMatched = true;
+        }
     });
-
+    if (!isMatched)
+        System.Console.WriteLine($"{key} bir alanla eslesmedi.");
 }
 
 System.Console.WriteLine(tomlFile.Title);

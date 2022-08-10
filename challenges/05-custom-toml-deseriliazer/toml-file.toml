@@ -1,7 +1,11 @@
 # This is a TOML document
 content = "TOML Content Example"
 title = "TOML Title Example"
+
+# Child Object
 [database]
 server = "localhost"
+
+# Child Object
 [ftp]
 server = "ip"

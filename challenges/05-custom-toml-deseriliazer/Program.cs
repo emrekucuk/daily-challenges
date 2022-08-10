@@ -45,12 +45,32 @@ void MapStringToObjectProperty(object tomlFileModel, string line)
     var key = keyValueParts[0];
     var value = keyValueParts[1];
     value = value.Replace("\"", "").Trim();
+
+    var valueType = CheckValueType(value);
+    object typeModifiedValue = null;
+
+    if (valueType == ValueTypes.Int)
+    {
+        typeModifiedValue = Convert.ToInt32(value);
+    }
+    if (valueType == ValueTypes.Datetime)
+    {
+        typeModifiedValue = Convert.ToDateTime(value);
+    }
+    if (valueType == ValueTypes.Double)
+    {
+        typeModifiedValue = Convert.ToDouble(value);
+    }
+    if (valueType == ValueTypes.String)
+    {
+        typeModifiedValue = value;
+    }
     var isMatched = false;
     tomlFileModel.GetType().GetProperties().ToList().ForEach(t =>
     {
         if (t.Name.ToLower().Trim() == key.ToLower().Trim())
         {
-            t.SetValue(tomlFileModel, value);
+            t.SetValue(tomlFileModel, typeModifiedValue);
             isMatched = true;
         }
     });
@@ -58,7 +78,56 @@ void MapStringToObjectProperty(object tomlFileModel, string line)
         System.Console.WriteLine($"{key} bir alanla eslesmedi.");
 }
 
-System.Console.WriteLine(tomlFile.Title);
-System.Console.WriteLine(tomlFile.Content);
-System.Console.WriteLine(tomlFile.Database.Server);
-System.Console.WriteLine(tomlFile.Ftp.Server);
+ValueTypes CheckValueType(string value)
+{
+    var isNumber = CheckValue(value, "0123456789");
+    if (isNumber)
+        return ValueTypes.Int;
+
+    var isDouble = CheckValue(value, "0123456789,");
+    if (isDouble)
+        return ValueTypes.Double;
+
+    var isDateTime = CheckValue(":+T", value);
+    if (isDateTime)
+        return ValueTypes.Datetime;
+
+    return ValueTypes.String;
+}
+
+bool CheckValue(string value, string valueList)
+{
+    bool isCheck = true;
+
+    for (int i = 0; i < value.Length; i++)
+    {
+        var character = value[i];
+        if (!valueList.Contains(character))
+        {
+            isCheck = false;
+            break;
+        }
+    }
+
+    if (isCheck)
+        return true;
+
+    return false;
+}
+
+System.Console.WriteLine($"Title: {tomlFile.Title}");
+System.Console.WriteLine($"Content: {tomlFile.Content}");
+System.Console.WriteLine($"Count: {tomlFile.Count}");
+System.Console.WriteLine($"Amount: {tomlFile.Amount}");
+System.Console.WriteLine($"Date: {tomlFile.Date}");
+System.Console.WriteLine($"Database Server:{tomlFile.Database.Server}");
+System.Console.WriteLine($"FTP Server: {tomlFile.Ftp.Server}");
+
+
+public enum ValueTypes
+{
+    String = 0,
+    Int = 1,
+    Double = 2,
+    Datetime = 3
+}

@@ -15,7 +15,7 @@ void ReadTomlFileDeseriliaze()
         while (streamReader.Peek() >= 0)
         {
             string line = streamReader.ReadLine();
-            if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line))
+            if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
                 continue;
 
             if (line.StartsWith('[') && line.EndsWith(']'))
@@ -39,38 +39,49 @@ void ReadTomlFileDeseriliaze()
     }
 }
 
-void MapStringToObjectProperty(object tomlFileModel, string line)
+void MapStringToObjectProperty(object referenceObject, string line)
 {
     var keyValueParts = line.Split('=');
     var key = keyValueParts[0];
     var value = keyValueParts[1];
-    value = value.Replace("\"", "").Trim();
+    value = value.Trim();
 
     var valueType = CheckValueType(value);
     object typeModifiedValue = null;
 
-    if (valueType == ValueTypes.Int)
+    switch (valueType)
     {
-        typeModifiedValue = Convert.ToInt32(value);
+        case ValueTypes.Int:
+            typeModifiedValue = Convert.ToInt32(value);
+            break;
+        case ValueTypes.Double:
+            typeModifiedValue = Convert.ToDouble(value);
+            break;
+        case ValueTypes.Datetime:
+            typeModifiedValue = Convert.ToDateTime(value);
+            break;
+        case ValueTypes.String:
+            typeModifiedValue = value.Replace("\"", "");
+            break;
+        default:
+            break;
     }
-    if (valueType == ValueTypes.Datetime)
-    {
-        typeModifiedValue = Convert.ToDateTime(value);
-    }
-    if (valueType == ValueTypes.Double)
-    {
-        typeModifiedValue = Convert.ToDouble(value);
-    }
-    if (valueType == ValueTypes.String)
-    {
-        typeModifiedValue = value;
-    }
+
+    // if (valueType == ValueTypes.Int)
+    //     typeModifiedValue = Convert.ToInt32(value);
+    // else if (valueType == ValueTypes.Datetime)
+    //     typeModifiedValue = Convert.ToDateTime(value);
+    // else if (valueType == ValueTypes.Double)
+    //     typeModifiedValue = Convert.ToDouble(value);
+    // else if (valueType == ValueTypes.String)
+    //     typeModifiedValue = value.Replace("\"", "");
+
     var isMatched = false;
-    tomlFileModel.GetType().GetProperties().ToList().ForEach(t =>
+    referenceObject.GetType().GetProperties().ToList().ForEach(t =>
     {
         if (t.Name.ToLower().Trim() == key.ToLower().Trim())
         {
-            t.SetValue(tomlFileModel, typeModifiedValue);
+            t.SetValue(referenceObject, typeModifiedValue);
             isMatched = true;
         }
     });
@@ -109,10 +120,7 @@ bool CheckValue(string value, string valueList)
         }
     }
 
-    if (isCheck)
-        return true;
-
-    return false;
+    return isCheck;
 }
 
 System.Console.WriteLine($"Title: {tomlFile.Title}");
@@ -122,7 +130,6 @@ System.Console.WriteLine($"Amount: {tomlFile.Amount}");
 System.Console.WriteLine($"Date: {tomlFile.Date}");
 System.Console.WriteLine($"Database Server:{tomlFile.Database.Server}");
 System.Console.WriteLine($"FTP Server: {tomlFile.Ftp.Server}");
-
 
 public enum ValueTypes
 {

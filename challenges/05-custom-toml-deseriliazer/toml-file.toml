@@ -1,8 +1,8 @@
 # This is a TOML document
-amount = "12,25"
+amount = 12,25
 content = "TOML Content Example"
-count = "25"
-date = "2022-08-10T14:14:48+00:00"
+count = 25
+date = 2022-08-10T14:14:48+00:00
 title = "TOML Title Example"
 
 # Child Object

@@ -18,9 +18,9 @@ string url = "https://bigpara.hurriyet.com.tr/doviz/";
 string document = GetSourceCode(url);
 
 var dolarIndex = document.IndexOf($"{"USDTRY"}");
-var dolarBuyingAndSelling = document.Substring(dolarIndex + 8, 30);
+var dolarBuyingAndSelling = document.Substring(dolarIndex + 8, 30).Replace("\"", "");
 System.Console.WriteLine($"Dolar: {dolarBuyingAndSelling}");
 
 var euroIndex = document.IndexOf($"{"EURTRY"}");
-var euroBuyingAndSelling = document.Substring(euroIndex + 8, 30);
+var euroBuyingAndSelling = document.Substring(euroIndex + 8, 30).Replace("\"", "");
 System.Console.WriteLine($"Euro: {euroBuyingAndSelling}");

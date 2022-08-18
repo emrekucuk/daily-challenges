@@ -1,4 +1,4 @@
-public class CreditCardsModel
+public class PosDeviceModel
 {
     public string DeviceId { get; set; }
     public List<PaymentAccount> PaymentAccounts { get; set; }

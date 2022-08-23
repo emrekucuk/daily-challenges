@@ -15,9 +15,9 @@ List<User> newUsersList = new List<User>()
     new User(){Id=5,Name="Hamza", Adress= "Ankara"}
 };
 
-ListsDiference(oldUsersList, newUsersList);
+ListsDifference(oldUsersList, newUsersList);
 
-void ListsDiference(List<User> oldList, List<User> newList)
+void ListsDifference(List<User> oldList, List<User> newList)
 {
     var newUsers = newList.Where(n => !oldList.Any(o => o.Id == n.Id)).ToList();
     var existUsers = newList.Where(n => oldList.Any(o => o.Id == n.Id)).ToList();

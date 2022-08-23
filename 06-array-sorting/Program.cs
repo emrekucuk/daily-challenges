@@ -36,5 +36,5 @@ Write(numbers);
 
 numbers = ArraySorting(numbers);
 
-System.Console.Write($"Dizinin Sol Hali: ");
+System.Console.Write($"Dizinin Son Hali: ");
 Write(numbers);
